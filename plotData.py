@@ -1,5 +1,6 @@
 # =============================================================================
 # Plotting script to accompany HOT theory simulation.
+# Density vs Yield
 #
 # Author:           Max Graves
 # Last Revised:     21-MAR-2013
@@ -11,7 +12,7 @@ import argparse, os, glob, sys
 # =============================================================================
 # parse the cmd line
 # =============================================================================
-helpString = ('This script plots the data from the 1D HOT model.\
+helpString = ('This script plots the Density vs Yield from the 1D HOT model.\
         It takes a value of N (number of sites) and L (characteristic scale).\
         This assumes that the Yield_N_L_D.txt files generated from the code\
         will exist in the same directory as this script, and that the number\
@@ -54,7 +55,8 @@ def main():
         sys.exit()
 
     os.chdir('./data/')
-    files = (glob.glob('*L%s_*'%L) or glob.glob('*N%s_*'%N))
+    files = (glob.glob('*Yield*') or glob.glob('*L%s_*'%L) 
+            or glob.glob('*N%s_*'%N))
     if files==[]:
         print '======HOT ERROR======='
         print './data/ directory doesnt have one of your values of N or L.'
@@ -86,8 +88,8 @@ def main():
         sys.exit()
 
     # Format inset plot axis
-    pl.xlabel('Average Yield', fontsize=10)
-    pl.ylabel('Density', fontsize=10)
+    pl.ylabel('Average Yield', fontsize=10)
+    pl.xlabel('Density', fontsize=10)
     pl.ylim(insetMin)
     pl.xlim(insetMin)
     pl.title('Zoomed in',fontsize=10)

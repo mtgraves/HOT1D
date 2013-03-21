@@ -31,7 +31,7 @@ def slice_samp(np.ndarray[DTYPE_f, ndim=1] Pk, int N = 10):
     
     Pk = np.array(Pk) / (1.*sum(Pk))
     cdef DTYPE_i u = random.uniform(0,max(Pk))
-    print 'u: ',u
+    
     for n in xrange(N):
         included = np.where(Pk>=u)[0]
         choice = random.randint(0,included.size)
@@ -106,6 +106,9 @@ def buildForest(np.ndarray[DTYPE_i, ndim=1] sparks, int N, double L, int D):
     # set array to hold the yield
     cdef np.ndarray[DTYPE_f, ndim=1] avgYield = np.zeros(N, dtype=DTYPEf)
 
+    # set array to hold tree locations at peak yield
+    cdef np.ndarray[DTYPE_i, ndim=1] forestAtPeak = 2*np.ones(N,dtype=DTYPEi)
+
     cdef int lenS = len(sparks)
     cdef int r, j, tempTreeLoc, currentBest
     cdef float damage
@@ -149,18 +152,22 @@ def buildForest(np.ndarray[DTYPE_i, ndim=1] sparks, int N, double L, int D):
         # Record Yield of best site
         avgYield[numTrees-1] = maxYield
 
+        # keep record of what the forest looked like at maximum yield
+        if numTrees>2:
+            if avgYield[numTrees-1]>avgYield[numTrees-2]:
+                forestAtPeak = np.copy(forest)
+
         # delete untreed location from array holding untreed sites
         if numTrees != N:
             unTreed = np.delete(unTreed, np.where(unTreed == chosenSite)[0][0])
             numTrees += 1
 
-        if numTrees %1000 == 0:
-            print numTrees
-
     avgYield /= 1.0*N
+
+    print np.sum(forestAtPeak)
 
     # print the peak yield
     peakYield = np.max(avgYield)
 
-    return avgYield, peakYield
+    return avgYield, peakYield, forestAtPeak
 # =============================================================================

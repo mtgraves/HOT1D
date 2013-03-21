@@ -58,36 +58,36 @@ def main():
     sitesLeft = pl.array([])
     for i in xrange(forest.size):
         if forest[i]!=1:
-            print i
             sitesLeft = pl.append(sitesLeft, i)
     sitesLeft = sitesLeft[::-1]
 
-    print sitesLeft
-
+    # determine intervals and sort them in order of size
     intervals = pl.array([forest.size-1-sitesLeft[0]])
     for i in xrange(1,sitesLeft.size-1):
         sizeInt = sitesLeft[i]-sitesLeft[i+1]
         intervals = pl.append(intervals, sizeInt)
     intervals = pl.append(intervals, sitesLeft[-1])
+    intervals = pl.sort(intervals)
 
-    print intervals
-    
+    # assign each interval a number
+    nums = pl.arange(1,sitesLeft.size+1)
 
     # main plot
-    #fig1 = pl.figure(1)
-    #ax = fig1.add_subplot(111)
-    #pl.ylabel('Average Yield', fontsize=20)
-    #pl.xlabel('Density', fontsize=20)
+    fig1 = pl.figure(1)
+    ax = fig1.add_subplot(111)
+    pl.ylabel('Interval Size', fontsize=20)
+    pl.xlabel('(Sorted) Inverval Number', fontsize=20)
 
     # loop over and plot each file we find
-    #newt = getD(f)
+    newt = getD(fileName)
     
-    #ax.plot(Density,Yield,label='(D=%s): peak=%s'%(newt,peak[1])) 
+    ax.plot(nums,intervals,label='(D=%s)'%(newt), marker='o', linewidth=0,
+            markerfacecolor='None', markeredgecolor='Navy') 
  
     # put labels into legend
-    #ax.legend(loc='lower center',shadow=True)
+    ax.legend(loc='upper left',shadow=True)
     
-    #pl.show()
+    pl.show()
 
 # =============================================================================
 if __name__=='__main__':
